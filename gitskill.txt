@@ -1,0 +1,127 @@
+安装git
+
+Linux
+首先，你可以试着输入git，看看系统有没有安装Git：
+
+$ git
+The program 'git' is currently not installed. You can install it by typing:
+sudo apt-get install git
+
+像上面的命令，有很多Linux会友好地告诉你Git没有安装，还会告诉你如何安装Git。
+
+如果你碰巧用Debian或Ubuntu Linux，通过一条sudo apt-get install git就可以直接完成Git的安装，非常简单。
+
+Windows
+msysgit是Windows版的Git，从https://git-for-windows.github.io下载
+https://pan.baidu.com/s/1kU5OCOB#list/path=%2Fpub%2Fgit国内镜像
+
+安装完成后，开始菜单里找到“Git”->“Git Bash” 在命令行输入：
+
+$ git config --global user.name "Your Name"
+$ git config --global user.email "email@example.com"
+
+windows下在cmd或powershell使用git提示不是内部命令时 检查环境变量里是否有git路径
+如果没有，添加Git目录下的bin路径到Paths环境变量下
+
+
+创建版本库
+
+创建一个空目录：
+
+$ mkdir learngit
+$ cd learngit
+$ pwd
+/Users/michael/learngit
+pwd命令用于显示当前目录。在我的Mac上，这个仓库位于/Users/michael/learngit。
+
+如果你使用Windows系统，为了避免遇到各种莫名其妙的问题，请确保目录名（包括父目录）不包含中文。
+
+通过git init命令把这个目录变成Git可以管理的仓库：
+
+$ git init
+Initialized empty Git repository in /Users/michael/learngit/.git/
+
+添加文件到Git仓库，分两步：
+
+第一步，使用命令git add <file>，注意，可反复多次使用，添加多个文件；
+
+第二步，使用命令git commit -m "xxxxx"，完成。-m后面输入的是本次提交的说明
+
+git status 命令可以让我们时刻掌握仓库当前的状态
+git diff  查看修改内容
+git log 可以查看提交历史 --pretty=oneline参数可以简化显示信息
+git reset --hard HEAD^  版本回退使用git reset命令，HEAD表示当前版本 HEAD^表示上一个版本 回退版本过多可用数字表示 例如：HEAD~100
+git reset --hard commit id  git log下看到的一大串数字（b2jlk32on...）就是commit id，版本号没必要写全，前几位就可以了
+git reflog  用来记录你的每一次命令：
+git checkout -- file命令把file在工作区的修改全部撤销，这里有两种情况：
+一种是file自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；
+一种是file已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态。
+总之，就是让这个文件回到最近一次git commit或git add时的状态。
+git checkout -- file命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令
+要从版本库中删除该文件，那就用命令git rm删掉，并且git commit
+
+创建SSH Key。在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，
+如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key：
+$ ssh-keygen -t rsa -C "youremail@example.com"
+第2步：登陆GitHub，打开“Account settings”，“SSH Keys”页面：
+然后，点“Add SSH Key”，填上任意Title，在Key文本框里粘贴id_rsa.pub文件的内容：
+点“Add Key”，你就应该看到已经添加的Key
+
+要关联一个远程库，使用命令git remote add origin git@server-name:path/repo-name.git
+关联后，使用命令git push -u origin master第一次推送master分支的所有内容
+此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改
+
+从远程库上克隆一个库到本地
+git clone git@github.com:server-name/repo-name.git
+
+
+git checkout -b branchname 创建分支
+git checkout branchname 切换分支
+git branch 命令查看当前分支
+git merge 命令用于合并指定分支到当前分支
+Fast-forward信息，Git告诉我们，这次合并是“快进模式”
+git branch -d branchname 删除分支
+git branch -D branchname 强行删除分支
+
+用带参数的git log也可以看到分支的合并情况
+git log --graph --pretty=oneline --abbrev-commit
+
+git merge --no-ff -m "merge with no-ff" branchname --no-ff参数，表示禁用Fast forward
+合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并。
+
+git stash 可以把当前工作现场“储藏”起来，等以后恢复后继续工作
+git stash list 查看保存的工作
+git stash apply 恢复
+git stash drop 来删除stash保存的内容
+git stash pop  恢复的同时把stash内容也删了
+
+git remote 查看远程库的信息
+git remote -v 显示更详细的信息
+git push origin branchname 推送制定分支到对应的远程库分支
+git pull 合并 如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，
+              用命令git branch --set-upstream branch-name origin/branch-name
+              从远程抓取分支，使用git pull，如果有冲突，要先处理冲突。
+
+git tag tagname 添加新标签，默认添加到最新提交的commit上
+git tag tagname commit-id 添加标签到指定的commit上
+git show tagname 查看标签信息
+
+创建带有说明的标签，用-a指定标签名，-m指定说明文字
+git tag -a versionname -m "comment" commit-id
+
+还可以通过-s用私钥签名一个标签：
+git tag -s tagname -m "comment" commit-id
+签名采用PGP签名，因此，必须首先安装gpg（GnuPG），如果没有找到gpg，或者没有gpg密钥对，就会报错：
+gpg: signing failed: secret key not available
+error: gpg failed to sign the data
+error: unable to sign the tag
+如果报错，请参考GnuPG帮助文档配置Key。
+
+ git tag -d tagname 删除标签
+ git push origin tagname 推送标签到远程库
+ git push origin --tags 一次性推送全部尚未推送到远程的本地标签
+ 
+ 如果标签已经推送到远程，要删除远程标签就麻烦一点，先从本地删除
+ 然后，从远程删除。删除命令也是push，但是格式如下
+ git push origin :refs/tags/tagname
+
