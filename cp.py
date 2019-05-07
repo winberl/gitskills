@@ -37,7 +37,8 @@ while i<zs:
         continue
 
 change_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-f = file('cp.txt','a+')
+f = open('cp.txt','a+')
+#f = file('cp.txt','a+')  python3中改成open()方法打开文件
 
 try:
     f.write('\n')
