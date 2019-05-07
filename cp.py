@@ -10,7 +10,7 @@ except:
 
 i = 0
 strssqs = []
-while i<zs:
+while i<int(zs):
     #红球  sample方法从集合中取样（集合，长度）
     hq = random.sample(range(1,34),6)
     hq.sort()
